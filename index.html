@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class 7 English Grammar - Annual Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .grammar-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 6px solid #4f46e5;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .correct {
+            background-color: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #064e3b !important;
+            font-weight: 600;
+        }
+        .wrong {
+            background-color: #fef2f2 !important;
+            border-color: #ef4444 !important;
+            color: #7f1d1d !important;
+        }
+    </style>
+</head>
+<body class="p-4 flex items-center justify-center min-h-screen">
+
+    <div id="app" class="w-full max-w-2xl">
+        <!-- Start Screen -->
+        <div id="start-screen" class="grammar-card rounded-3xl p-8 text-center">
+            <div class="mb-6 inline-block p-6 bg-indigo-100 rounded-full text-indigo-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">English Grammar Exam</h1>
+            <p class="text-indigo-600 font-medium mb-8">Class 7 | Annual Revision | 50 Questions</p>
+            
+            <button onclick="startQuiz()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-5 rounded-2xl shadow-xl transition-all active:scale-95 text-xl">
+                Start Quiz ✍️
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden grammar-card rounded-3xl p-6 md:p-10">
+            <div class="h-2 w-full bg-gray-100 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+            </div>
+
+            <h2 id="question-text" class="text-xl md:text-2xl font-bold text-gray-800 mb-10 leading-snug min-h-[80px]"></h2>
+
+            <div id="options-container" class="grid grid-cols-1 gap-4"></div>
+
+            <div class="mt-10">
+                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-2xl shadow-lg transition-all">
+                    Next Question →
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden grammar-card rounded-3xl p-10 text-center">
+            <div class="text-7xl mb-6">🎓</div>
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Quiz Completed!</h2>
+            <div class="inline-block bg-indigo-50 px-8 py-4 rounded-3xl mb-8">
+                <div class="text-6xl font-black text-indigo-700" id="final-score">0</div>
+                <div class="text-indigo-900 font-bold mt-2">Score out of 50</div>
+            </div>
+            <p class="text-lg text-gray-700 mb-10 leading-relaxed" id="result-msg"></p>
+            
+            <button onclick="location.reload()" class="w-full bg-indigo-900 text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-black transition-all">
+                Try Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const rawQuizData = [
+            { q: "Choose the correct article: He is ___ honest man.", a: ["a", "an", "the", "no article"], c: "an" },
+            { q: "Identify the tense: 'I have finished my homework.'", a: ["Simple Past", "Present Perfect", "Past Perfect", "Present Continuous"], c: "Present Perfect" },
+            { q: "Which is the plural of 'Child'?", a: ["Childs", "Childrens", "Children", "Childes"], c: "Children" },
+            { q: "Find the synonym of 'Happy'.", a: ["Sad", "Joyful", "Angry", "Tired"], c: "Joyful" },
+            { q: "Select the correct preposition: The book is ___ the table.", a: ["in", "on", "at", "under"], c: "on" },
+            { q: "Choose the correct form: She ___ to school every day.", a: ["go", "goes", "going", "gone"], c: "goes" },
+            { q: "Identify the feminine of 'Horse'.", a: ["Mare", "Doe", "Ewe", "Vixen"], c: "Mare" },
+            { q: "Which of these is an Abstract Noun?", a: ["Table", "Water", "Honesty", "Teacher"], c: "Honesty" },
+            { q: "Find the correctly spelled word.", a: ["Receive", "Recieve", "Receve", "Riceive"], c: "Receive" },
+            { q: "Change into Passive Voice: 'Ramu kills a snake.'", a: ["A snake killed Ramu.", "A snake is killed by Ramu.", "A snake was killed by Ramu.", "Ramu is killed by a snake."], c: "A snake is killed by Ramu." },
+            { q: "Choose the correct Pronoun: 'This is my bag. ___ is blue.'", a: ["He", "It", "She", "They"], c: "It" },
+            { q: "What is the superlative degree of 'Good'?", a: ["Gooder", "Better", "Best", "Goodest"], c: "Best" },
+            { q: "Which of these is a Conjunction?", a: ["Quickly", "And", "From", "She"], c: "And" },
+            { q: "Identify the Interjection.", a: ["Run", "Alas!", "With", "Between"], c: "Alas!" },
+            { q: "Complete the sentence: 'If it rains, we ___ the match.'", a: ["cancel", "will cancel", "canceled", "canceling"], c: "will cancel" },
+            { q: "Choose the correct Modal: '___ I come in, Sir?'", a: ["May", "Can", "Will", "Must"], c: "May" },
+            { q: "Find the Adjective: 'The hungry lion roared loudly.'", a: ["Roared", "Loudly", "Hungry", "Lion"], c: "Hungry" },
+            { q: "Identify the Adverb: 'He speaks English fluently.'", a: ["Speaks", "English", "Fluently", "He"], c: "Fluently" },
+            { q: "Select the Antonym of 'Ancient'.", a: ["Old", "Modern", "Historic", "Past"], c: "Modern" },
+            { q: "Choose the correct article: She is ___ tallest girl in class.", a: ["a", "an", "the", "no article"], c: "the" },
+            { q: "Which is a Collective Noun?", a: ["Team", "Player", "Game", "Ball"], c: "Team" },
+            { q: "Complete the sentence: 'They ___ playing football now.'", a: ["is", "am", "are", "was"], c: "are" },
+            { q: "The past tense of 'Eat' is ___.", a: ["Eaten", "Ate", "Eating", "Eats"], c: "Ate" },
+            { q: "Choose the odd one out.", a: ["Pen", "Pencil", "Paper", "Running"], c: "Running" },
+            { q: "Identify the Direct Speech: He said, 'I am ill.'", a: ["He said that he was ill.", "He says he is ill.", "He said, 'I am ill.'", "He was ill."], c: "He said, 'I am ill.'" },
+            { q: "Identify the Indirect Speech: She says, 'I am happy.'", a: ["She says that she is happy.", "She said she was happy.", "She is happy.", "She asked if she was happy."], c: "She says that she is happy." },
+            { q: "Which is a Proper Noun?", a: ["City", "Country", "India", "River"], c: "India" },
+            { q: "Select the correct Modal for advice: You ___ obey your parents.", a: ["might", "should", "could", "may"], c: "should" },
+            { q: "What is the plural of 'Mouse'?", a: ["Mouses", "Mice", "Mices", "Mouse"], c: "Mice" },
+            { q: "Identify the sentence type: 'Where do you live?'", a: ["Assertive", "Imperative", "Interrogative", "Exclamatory"], c: "Interrogative" },
+            { q: "Choose the correct article: I saw ___ European man.", a: ["a", "an", "the", "no article"], c: "a" },
+            { q: "Which one is an Uncountable Noun?", a: ["Book", "Star", "Milk", "Tree"], c: "Milk" },
+            { q: "Change to Passive: 'I like apples.'", a: ["Apples are liked by me.", "Apples were liked by me.", "Apples like me.", "I am liked by apples."], c: "Apples are liked by me." },
+            { q: "Identify the subject: 'The little boy ran away.'", a: ["Ran away", "The little boy", "Boy", "Ran"], c: "The little boy" },
+            { q: "Which is the correct auxiliary? 'She ___ not come yet.'", a: ["has", "have", "do", "did"], c: "has" },
+            { q: "Opposite of 'Narrow' is ___.", a: ["Short", "Wide", "Long", "Small"], c: "Wide" },
+            { q: "The feminine of 'Monk' is ___.", a: ["Nun", "Sister", "Lady", "Woman"], c: "Nun" },
+            { q: "The young one of a 'Cow' is called a ___.", a: ["Puppy", "Calf", "Kitten", "Cub"], c: "Calf" },
+            { q: "Fill in the blank: 'Either Ram or his friends ___ coming.'", a: ["is", "are", "am", "was"], c: "are" },
+            { q: "Identify the Preposition: 'He jumped into the river.'", a: ["Jumped", "Into", "River", "He"], c: "Into" },
+            { q: "What is the comparative degree of 'Busy'?", a: ["Busiest", "More busy", "Busier", "Busyest"], c: "Busier" },
+            { q: "Choose the correct spelling.", a: ["Separate", "Seperate", "Seprate", "Saparate"], c: "Separate" },
+            { q: "Which is a 'Compound Noun'?", a: ["Toothbrush", "Teeth", "Brush", "Wash"], c: "Toothbrush" },
+            { q: "Identify the tense: 'I will be waiting for you.'", a: ["Simple Future", "Future Continuous", "Future Perfect", "Present Continuous"], c: "Future Continuous" },
+            { q: "Which word is a Synonym for 'Begin'?", a: ["Finish", "Start", "Stop", "End"], c: "Start" },
+            { q: "Choose the correct relative pronoun: 'The man ___ stole my purse was caught.'", a: ["which", "who", "whom", "whose"], c: "who" },
+            { q: "Select the correct auxiliary: 'Birds ___ fly.'", a: ["can", "may", "must", "should"], c: "can" },
+            { q: "What kind of noun is 'Army'?", a: ["Common", "Proper", "Collective", "Material"], c: "Collective" },
+            { q: "Choose the correct article: ___ sun rises in the east.", a: ["A", "An", "The", "No article"], c: "The" },
+            { q: "What is the past participle of 'Write'?", a: ["Wrote", "Writing", "Written", "Writes"], c: "Written" }
+        ];
+
+        let quizQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+        let answered = false;
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz() {
+            quizQuestions = shuffle([...rawQuizData]);
+            currentIdx = 0;
+            score = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            answered = false;
+            const q = quizQuestions[currentIdx];
+            document.getElementById('question-text').innerText = `${currentIdx + 1}. ${q.q}`;
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            const progress = ((currentIdx) / 50) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            const shuffledOptions = shuffle([...q.a]);
+
+            shuffledOptions.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn w-full text-left p-5 rounded-2xl font-medium text-gray-700 bg-white hover:border-indigo-400 hover:bg-indigo-50 flex items-center shadow-sm';
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center mr-4 text-sm font-bold shrink-0">${String.fromCharCode(65 + idx)}</span>
+                    <span class="text-lg">${opt}</span>
+                `;
+                btn.onclick = () => checkAnswer(opt, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedText, btn) {
+            if (answered) return;
+            answered = true;
+
+            const correctText = quizQuestions[currentIdx].c;
+            const allBtns = document.querySelectorAll('.option-btn');
+
+            if (selectedText === correctText) {
+                btn.classList.add('correct');
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => {
+                    if (b.innerText.includes(correctText)) {
+                        b.classList.add('correct');
+                    }
+                });
+            }
+
+            document.getElementById('next-btn').classList.remove('hidden');
+            if (currentIdx === 49) document.getElementById('next-btn').innerText = "View Final Result";
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < 50) showQuestion();
+            else showResult();
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = score;
+            
+            let msg = "";
+            if (score === 50) msg = "Perfect! Your grammar is flawless. Good luck for the exam!";
+            else if (score >= 40) msg = "Excellent! You have a great command over English grammar.";
+            else if (score >= 25) msg = "Good job! Keep practicing to improve your accuracy.";
+            else msg = "You need more practice. Review the basic rules of grammar and try again.";
+            
+            document.getElementById('result-msg').innerText = msg;
+        }
+    </script>
+</body>
+</html>
